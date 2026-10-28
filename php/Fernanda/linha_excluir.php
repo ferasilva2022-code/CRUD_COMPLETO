@@ -1,3 +1,3 @@
 <?php 
-include_once ('conexão.php');
+include_once ('../conexao.php');
 ?>

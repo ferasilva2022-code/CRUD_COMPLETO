@@ -24,7 +24,7 @@ formCadastroLinha.addEventListener('submit', async(event) =>{
     //LISTAGEM DAS LINHAS
     // vai la pro localStorage
     const linha = JSON.parse(localStorage.getItem('linhas_de_onibus')) || [];
-    const obj = {codigo: codigoLinha, nome: nomeLinha, status:statusLinha}; // forma como os dados serão apresentados la na application
+    const obj = {codigo: codigoLinha, nome: nomeLinha, status:statusLinha, valor_tarifa:'R$6,00'}; // forma como os dados serão apresentados la na application
     if (indiceEdicao !== null) {
         // Edição acontecendo, então altera a posição original
         linha[indiceEdicao] = obj;
@@ -65,7 +65,7 @@ function carregarLinhas() {
     // Pega a lista do localStorage ou inicializa com a linha padrão
     let listaLinhas = JSON.parse(localStorage.getItem('linhas_de_onibus'));
     if (listaLinhas== null) {
-        listaLinhas = [{ codigo: 'B02', nome: 'Maracanã/Cabral', status: 'Ativa' }];
+        listaLinhas = [{ codigo: 'B02', nome: 'Maracanã/Cabral', status: 'Ativa', valor_tarifa: 'R$6,00' }];
         localStorage.setItem('linhas_de_onibus', JSON.stringify(listaLinhas));
     }
     let indice = 0;
@@ -76,6 +76,7 @@ function carregarLinhas() {
                 <td>${obj.codigo}</td>
                 <td>${obj.nome}</td>
                 <td>${obj.status}</td>
+                <td>${obj.valor_tarifa}</td>
                 <td>
                     <button type="button" class="btn btn-warning btn-sm" onclick="editarLinha(${indice})">Editar</button>
                     <button type="button" class="btn btn-danger btn-sm" onclick="removerLinha(${indice})">Remover</button>
