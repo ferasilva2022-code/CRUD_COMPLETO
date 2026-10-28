@@ -1,0 +1,136 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>Horários - BusMap</title>
+
+    <!-- Bootstrap -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/css/bootstrap.min.css" rel="stylesheet">
+
+    <!-- CSS geral do BusMap -->
+    <link rel="stylesheet" href="../../style.css">
+
+    <!-- CSS específico -->
+    <link rel="stylesheet" href="style.css">
+</head>
+
+<body>
+
+    <!-- Navbar -->
+    <nav class="navbar navbar-expand">
+        <div class="container">
+            <a class="navbar-brand" href="../../index.html">BusMap</a>
+
+            <div class="navbar-nav">
+                <a class="nav-link" href="../Medina/index.html">Usuários</a>
+                <a class="nav-link" href="../Fernanda/linha.html">Linhas</a>
+                <a class="nav-link" href="../Leonardo/itinerario.html">Itinerários</a>
+                <a class="nav-link" href="../Alice/ponto.html">Pontos</a>
+                <a class="nav-link" href="horario.html">Horáios</a>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Conteúdo -->
+    <main class="container my-5">
+
+        <h1 class="mb-4">Horários</h1>
+
+        <!-- Cadastro -->
+        <div class="card shadow-sm p-4 mb-5">
+
+            <h2 class="mb-4">Cadastro de Horários</h2>
+
+            <form id="formHorarios">
+
+                <input type="hidden" id="id">
+
+                <div class="row g-3">
+
+                    <div class="col-md-6">
+                        <label class="form-label">Código da Linha</label>
+                        <input type="text" id="codigoLinha" class="form-control" required>
+                    </div>
+
+                    <div class="col-md-6">
+                        <label class="form-label">Número do Ponto</label>
+                        <input type="text" id="numeroPonto" class="form-control" required>
+                    </div>
+
+                    <div class="col-md-6">
+                        <label class="form-label">Horário</label>
+                        <input type="time" id="hora" class="form-control" required>
+                    </div>
+
+                    <div class="col-md-6">
+                        <label class="form-label">Dia</label>
+                        <select id="dia" class="form-select" required>
+                            <option value="">Selecione</option>
+                            <option value="dia_util">Dia útil</option>
+                            <option value="sabado">Sábado</option>
+                            <option value="domingo">Domingo</option>
+                            <option value="feriado">Feriado</option>
+                        </select>
+                    </div>
+
+                    <div class="col-md-6">
+                        <label class="form-label">Tabela</label>
+                        <input type="number" id="tabela" class="form-control" required>
+                    </div>
+
+                    <div class="col-md-6">
+                        <label class="form-label">Adaptação</label>
+                        <input type="text" id="adaptacao" class="form-control">
+                    </div>
+
+                </div>
+
+                <div class="mt-4">
+                    <button type="submit" class="btn btn-primary px-4">Salvar</button>
+                    <button type="button" class="btn btn-secondary px-4" onclick="cancelarEdicao()">Cancelar</button>
+                </div>
+
+            </form>
+
+        </div>
+
+        <!-- Listagem -->
+        <section>
+
+            <h2 class="mb-3">Horários Cadastrados</h2>
+
+            <div class="table-responsive">
+
+                <table class="table table-striped table-hover align-middle">
+
+                    <thead>
+                        <tr>
+                            <th>ID</th>
+                            <th>Linha</th>
+                            <th>Ponto</th>
+                            <th>Hora</th>
+                            <th>Dia</th>
+                            <th>Tabela</th>
+                            <th>Adaptação</th>
+                            <th>Ações</th>
+                        </tr>
+                    </thead>
+
+                    <tbody id="listaHorarios"></tbody>
+
+                </table>
+
+            </div>
+
+        </section>
+
+    </main>
+
+    <script src="horario.js"></script>
+
+</body>
+
+</html>

@@ -1,0 +1,102 @@
+/* ==================== Geral ==================== */
+
+* {
+    box-sizing: border-box;
+}
+
+body {
+    margin: 0;
+    background-color: #F8F9FA;
+    color: #212529;
+    font-family: Arial, Helvetica, sans-serif;
+}
+
+
+/* ==================== Navbar ==================== */
+
+.navbar {
+    background-color: #1F4E78;
+    padding: 16px 0;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+}
+
+.navbar .navbar-brand {
+    color: #FFFFFF !important;
+    font-size: 24px;
+    font-weight: bold;
+    text-decoration: none;
+}
+
+.navbar .navbar-brand:hover {
+    color: #FFFFFF !important;
+}
+
+.navbar .navbar-nav .nav-link {
+    color: #FFFFFF !important;
+    margin-left: 15px;
+    transition: 0.2s;
+}
+
+.navbar .navbar-nav .nav-link:hover {
+    color: #DCE6F0 !important;
+}
+
+/* ==================== Home ==================== */
+
+ .hero {
+    min-height: 75vh;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+}
+
+.btn-busmap {
+    background-color: #1F4E78;
+    color: white;
+}
+
+.btn-busmap:hover {
+    background-color: #173A5E;
+    color: white;
+}
+
+
+/* ==================== Botão ==================== */
+
+.btn-busmap {
+    background-color: #1F4E78;
+    color: #FFFFFF;
+    border: none;
+    padding: 10px 30px;
+    border-radius: 8px;
+    transition: 0.2s;
+}
+
+.btn-busmap:hover {
+    background-color: #173A5E;
+    color: #FFFFFF;
+    transform: translateY(-2px);
+}
+
+
+/* ==================== Responsividade ==================== */
+
+@media (max-width: 768px) {
+    .hero-content {
+        padding: 35px 20px;
+    }
+
+    .hero h1 {
+        font-size: 40px;
+    }
+
+    .hero p {
+        font-size: 16px;
+    }
+
+    .nav-link {
+        margin-left: 5px;
+        font-size: 14px;
+    }
+}

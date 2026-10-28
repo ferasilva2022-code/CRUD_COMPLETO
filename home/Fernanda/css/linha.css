@@ -1,0 +1,43 @@
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    background-color: #F8F9FA;
+    font-family: Arial, Helvetica, sans-serif;
+}
+
+/* Estilização do cabeçalho da tabela */
+table thead th {
+    background-color: #1F4E78 !important;
+    color: white !important;
+}
+
+/* Customização dos botões e do card */
+.card {
+    border: none;
+}
+
+#btnCadastrarLinha {
+    background-color: #1F4E78;
+    border-color: #1F4E78;
+}
+
+#btnCadastrarLinha:hover {
+    background-color: #173A5E;
+    border-color: #173A5E;
+}
+
+/* Tratamento de erros */
+.input-erro {
+    border-color: #dc3545 !important;
+}
+
+.msg-erro {
+    color: #dc3545;
+    font-size: 0.85rem;
+    display: block;
+    margin-top: 4px;
+}

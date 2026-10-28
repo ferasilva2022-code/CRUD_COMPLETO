@@ -1,0 +1,96 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>Itinerários - BusMap</title>
+
+    <!-- Bootstrap -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/css/bootstrap.min.css" rel="stylesheet">
+
+    <!-- CSS geral do BusMap -->
+    <link rel="stylesheet" href="../../style.css">
+
+    <!-- CSS específico -->
+    <link rel="stylesheet" href="style.css">
+</head>
+
+<body>
+
+    <!-- Navbar -->
+    <nav class="navbar navbar-expand">
+        <div class="container">
+            <a class="navbar-brand" href="../../index.html">BusMap</a>
+
+            <div class="navbar-nav">
+                <a class="nav-link" href="../Medina/index.html">Usuários</a>
+                <a class="nav-link" href="../Fernanda/linha.html">Linhas</a>
+                <a class="nav-link" href="itinerario.html">Itinerários</a>
+                <a class="nav-link" href="../Alice/ponto.html">Pontos</a>
+                <a class="nav-link" href="../Luiz/horario.html">Horários</a>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Conteúdo -->
+    <main class="container my-5">
+
+        <h1 class="mb-4">Itinerários</h1>
+
+        <!-- Cadastro -->
+        <div class="card shadow-sm p-4 mb-5">
+
+            <h2 class="mb-4">Cadastrar Itinerário</h2>
+
+            <div class="row g-3">
+
+                <div class="col-md-6">
+                    <label for="codigoLinha" class="form-label">Código da Linha</label>
+                    <input type="text" id="codigoLinha" maxlength="10" placeholder="Ex: L204" class="form-control">
+                </div>
+
+                <div class="col-md-6">
+                    <label for="sentido" class="form-label">Sentido</label>
+                    <input type="text" id="sentido" maxlength="100" placeholder="Ex: Centro - Bairro Novo" class="form-control">
+                </div>
+
+                <div class="col-md-6">
+                    <label for="ativo" class="form-label">Situação</label>
+                    <select id="ativo" class="form-select">
+                        <option value="true">Ativo</option>
+                        <option value="false">Inativo</option>
+                    </select>
+                </div>
+
+            </div>
+
+            <div class="mt-4">
+                <button type="button" id="btnAdicionar" class="btn btn-primary px-4">Adicionar</button>
+
+                <button type="button" id="btnSalvar" class="btn btn-primary px-4" style="display:none;"">
+                    Salvar Alteração
+                </button>
+
+                <span id="msgForm" class="ms-3"></span>
+            </div>
+
+        </div>
+
+        <!-- Listagem -->
+        <section>
+            <h2 class="mb-3">Itinerários Cadastrados</h2>
+
+            <div class="table-responsive">
+                <div id="listaItinerarios"></div>
+            </div>
+        </section>
+
+    </main>
+
+    <script src="itinerario.js"></script>
+
+</body>
+
+</html>
