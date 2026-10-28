@@ -1,7 +1,6 @@
 
 //CADASTRAR AS LINHAS
 const formCadastroLinha = document.getElementById('formularioCadastroLinha'); //puxando o formulário la do html das linhas
-let indiceEdicao = null; // ngm vai ser editado por enqaunto
 
 document.addEventListener('DOMContentLoaded', () =>{
     carregarLinhas();
@@ -13,36 +12,11 @@ formCadastroLinha.addEventListener('submit', async(event) =>{
     const erros = validarFormLinha();
     mostrarErros(erros);
     if (Object.keys(erros).length > 0) return; // se der erro, para aqui.
-    
-    // variáveis que vem la do html
-    let nomeLinha = document.getElementById('nomeLinha').value;
-    let codigoLinha = document.getElementById('codigoLinha').value;
-    let checkboxStatus = document.getElementById('statusLinha');
-    let statusLinha = checkboxStatus.checked ? 'Ativa' : 'Inativa';
 
-
-    //LISTAGEM DAS LINHAS
-    // vai la pro localStorage
-    const linha = JSON.parse(localStorage.getItem('linhas_de_onibus')) || [];
-    const obj = {codigo: codigoLinha, nome: nomeLinha, status:statusLinha, valor_tarifa:'R$6,00'}; // forma como os dados serão apresentados la na application
-    if (indiceEdicao !== null) {
-        // Edição acontecendo, então altera a posição original
-        linha[indiceEdicao] = obj;
-        indiceEdicao = null; // Voltou ao estado padrão
-        document.getElementById('btnCadastrarLinha').textContent = 'Cadastrar';
-    } else {
-        // Novo registro
-        linha.push(obj);
-    }
-    localStorage.setItem('linhas_de_onibus', JSON.stringify(linha));
-    
-
-    carregarLinhas(); // carrega as linhas com os indices atualizados
-    formCadastroLinha.reset(); // limpa o formulário
-    
     // fazendo a ponte de envio dos dados do form => servidor
     let formData = new FormData(formCadastroLinha); // aqui extrai os valores digitados
     let dados = Object.fromEntries(formData); // tranforma os valores em objeto
+    formCadastroLinha.reset(); // limpa o formulário (depois de pegar os dados)
 
     const resposta = await fetch ("http://localhost/busmap/php/Fernanda/linha_novo.php", {
         method: 'POST',
@@ -51,60 +25,42 @@ formCadastroLinha.addEventListener('submit', async(event) =>{
     });
 
     let respostaJSON = await resposta.json().catch(()=> ({})); // espera a resposta do PHP
-    
+    alert(respostaJSON.mensagem); // mostra se a linha foi inserida ou deu erro
+    carregarLinhas(); // recarrega a lista depois de gravar no banco
+
     // Até aqui o código rodou e as funções que foram chamadas até agr deram certo
     // NÃO TOCA EM NADA DAQUI PRA CIMA FERNANDA!
  });
 
 
-function carregarLinhas() {
+async function carregarLinhas() {
     const tbody = document.getElementById('linhacards');
     if (!tbody) return;
     // Limpa a tabela para evitar duplicação
     tbody.innerHTML = '';
-    // Pega a lista do localStorage ou inicializa com a linha padrão
-    let listaLinhas = JSON.parse(localStorage.getItem('linhas_de_onibus'));
-    if (listaLinhas== null) {
-        listaLinhas = [{ codigo: 'B02', nome: 'Maracanã/Cabral', status: 'Ativa', valor_tarifa: 'R$6,00' }];
-        localStorage.setItem('linhas_de_onibus', JSON.stringify(listaLinhas));
-    }
-    let indice = 0;
+    // // Pega a lista do localStorage ou inicializa com a linha padrão
+    // let listaLinhas = JSON.parse(localStorage.getItem('linhas_de_onibus'));
+    // if (listaLinhas== null) {
+    //     listaLinhas = [{ id: 'B02', nome: 'Maracanã/Cabral', forma_pagamento:'Somente Cartão', status: 'Ativa', valor_tarifa: 'R$6,00' }];
+    //     localStorage.setItem('linhas_de_onibus', JSON.stringify(listaLinhas));
+    // }
+    const retorno = await fetch ("http://localhost/busmap/php/Fernanda/linha_detalhe.php");
+    const resposta = await retorno.json();
     // Percorre a lista criando as linhas (<tr>) da tabela
-    for (let obj of listaLinhas) {
+    for (let obj of resposta.data) {
         tbody.innerHTML += `
             <tr>
-                <td>${obj.codigo}</td>
+                <td>${obj.id}</td>
                 <td>${obj.nome}</td>
-                <td>${obj.status}</td>
+                <td>${obj.forma_de_pagamento}</td>
+                <td>${obj.status_linha}</td>
                 <td>${obj.valor_tarifa}</td>
                 <td>
-                    <button type="button" class="btn btn-warning btn-sm" onclick="editarLinha(${indice})">Editar</button>
-                    <button type="button" class="btn btn-danger btn-sm" onclick="removerLinha(${indice})">Remover</button>
+                    <button type="button" class="btn btn-warning btn-sm" onclick="editarLinha('${obj.id}')">Editar</button>
+                    <button type="button" class="btn btn-danger btn-sm" onclick="excluir('${obj.id}')">Remover</button>
                 </td>
             </tr>`;
-        indice++;}}
-
-// edção das linhas
-function editarLinha(indice){
-   let listaLinhas = JSON.parse(localStorage.getItem('linhas_de_onibus')) || [];
-   let item = listaLinhas[indice];
-   if(item){
-        document.getElementById('codigoLinha').value = item.codigo;
-        document.getElementById('nomeLinha').value = item.nome;
-        document.getElementById('statusLinha').checked = item.status === 'Ativa';
-        
-        indiceEdicao = indice;
-        document.getElementById('btnCadastrarLinha').textContent = 'Salvar Alteração';;
-        
     }
-}
-
-// remoção das linhas
-function removerLinha(indice){
-    let listaLinhas = JSON.parse(localStorage.getItem('linhas_de_onibus')) || [];
-    listaLinhas.splice(indice,1);
-    localStorage.setItem('linhas_de_onibus',JSON.stringify(listaLinhas));
-    carregarLinhas();
 }
 
 const Validar = {
@@ -115,16 +71,16 @@ const Validar = {
 
 function validarFormLinha(){
     let nomeLinha = document.getElementById('nomeLinha').value;
-    let codigoLinha = document.getElementById('codigoLinha').value;
+    let idLinha = document.getElementById('idLinha').value;
 
     const erros ={};
     if(Validar.vazio(nomeLinha)){
         erros.nomeLinha = 'Nome obrigatório';
         alert('Preencha o nome da linha');
     }
-    if(!Validar.minLen(codigoLinha,3)){
-        erros.codigoLinha = 'Mínimo 3 caracteres';
-        alert('o código deve conter no mínimo 3 caracteres');
+    if(!Validar.minLen(idLinha,3)){
+        erros.idLinha ='Mínimo 3 caracteres';
+        alert('o ID deve conter no mínimo 3 caracteres');
     }
         return erros;
 } // se estiver tudo ok => objeto vazio = sem erros

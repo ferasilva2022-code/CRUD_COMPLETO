@@ -37,11 +37,25 @@
                         <span class="msg-erro" id="erro-nomeLinha"></span>
                     </div>
 
-                    <!-- Código da Linha -->
+                    <!-- ID da Linha -->
                     <div class="col-md-4">
-                        <label for="codigoLinha" class="form-label">Código da Linha</label>
-                        <input type="text" class="form-control" id="codigoLinha" name="codigoLinha" placeholder="Ex: 350" required>
-                        <span class="msg-erro" id="erro-codigoLinha"></span>
+                        <label for="idLinha" class="form-label">ID da Linha</label>
+                        <input type="text" class="form-control" id="idLinha" name="idLinha" placeholder="Ex: 350" required>
+                        <span class="msg-erro" id="erro-idLinha"></span>
+                    </div>
+
+                    <!-- Forma pagamento da Linha -->
+                    <div class="col-md-4">
+                        <label for="formaPagamento" class="form-label">Forma de pagamento aceita</label>
+                        <input type="text" class="form-control" id="formaPagamento" name="formaPagamento" placeholder="Ex: Cartão" required>
+                        <span class="msg-erro" id="erro-formaPagamento"></span>
+                    </div>
+
+                    <!-- Valor da tarifa -->
+                    <div class="col-md-4">
+                        <label for="valorTarifa" class="form-label">Valor da tarifa</label>
+                        <input type="number" step="0.01" min="0" class="form-control" id="valorTarifa" name="valorTarifa" placeholder="Ex: 3.50" required>
+                        <span class="msg-erro" id="erro-valorTarifa"></span>
                     </div>
 
                     <!-- Status -->
@@ -51,6 +65,8 @@
                             <label class="form-check-label" for="statusLinha" id="labelStatus">Ativa</label>
                         </div>
                     </div>
+
+                    
                 </div>
 
                 <div id="botoes" class="mt-4">
@@ -68,8 +84,9 @@
             <table class="table table-striped table-hover align-middle" id="containerCards">
                 <thead>
                     <tr>
-                        <th>CÓDIGO</th>
+                        <th>ID</th>
                         <th>NOME</th>
+                        <th>FORMA DE PAGAMENTO ACEITA</th>
                         <th>STATUS</th>
                         <th>VALOR DA TARIFA</th>
                         <th>AÇÕES</th>
@@ -80,6 +97,8 @@
         </div>
     </div>
 
+    <script src="../../js/Fernanda/alterar_linha.js"></script>
+    <script src="../../js/Fernanda/excluir_linha.js"></script>
     <script src="linha.js"></script>
 </body>
 </html>

@@ -20,12 +20,14 @@ table thead th {
     border: none;
 }
 
-#btnCadastrarLinha {
+#btnCadastrarLinha,
+.btn-salvar {
     background-color: #1F4E78;
     border-color: #1F4E78;
 }
 
-#btnCadastrarLinha:hover {
+#btnCadastrarLinha:hover,
+.btn-salvar:hover {
     background-color: #173A5E;
     border-color: #173A5E;
 }
