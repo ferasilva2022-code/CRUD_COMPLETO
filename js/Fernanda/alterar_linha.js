@@ -1,12 +1,20 @@
 // edição das linhas: chamada pelo botão Editar do linha.html
 function editarLinha(id){
     // abre a página de alteração passando o id da linha na URL
-    window.location.href = "http://localhost/busmap/home/Fernanda/linha_alterar.html?id=" + id;
+    window.location.href = "linha_alterar.html?id=" + id;
 }
 
-document.addEventListener("DOMContentLoaded", () => {
+document.addEventListener("DOMContentLoaded", async () => {
     // só busca se estiver na página de alteração (no linha.html não existe a tabelaLinhas)
     if(!document.getElementById("tabelaLinhas")) return;
+
+    // usuário comum não pode alterar: volta para a lista
+    const usuario = await valida_sessao();
+    if(usuario.tipo != 'admin'){
+        alert("Apenas administradores podem alterar linhas.");
+        window.location.href = "linha.html";
+        return;
+    }
 
     // linha_alterar.html?id=B02 mostra só a linha B02; sem id, mostra todas
     const url = new URLSearchParams(window.location.search);
@@ -15,9 +23,10 @@ document.addEventListener("DOMContentLoaded", () => {
 });
 
 async function buscar(id){
-    let endereco = "http://localhost/busmap/php/Fernanda/linha_listar.php";
+    // o linha_detalhe.php sem id já devolve todas as linhas
+    let endereco = "../../php/Fernanda/linha_detalhe.php";
     if(id){
-        endereco = "http://localhost/busmap/php/Fernanda/linha_detalhe.php?id=" + id;
+        endereco += "?id=" + id;
     }
 
     const retorno = await fetch(endereco);
@@ -30,7 +39,7 @@ async function buscar(id){
         for(const linha of resposta.data){
             tabela.innerHTML += `
                 <tr>
-                    <td><input type="text" class="form-control" id="id-${linha.id}" value="${linha.id}">td>
+                    <td><input type="text" class="form-control" id="id-${linha.id}" value="${linha.id}" readonly></td>
                     <td><input type="text" class="form-control" id="nome-${linha.id}" value="${linha.nome}"></td>
                     <td><input type="text" class="form-control" id="formaPagamento-${linha.id}" value="${linha.forma_de_pagamento}"></td>
                     <td>
@@ -49,7 +58,6 @@ async function buscar(id){
 }
 
 async function alterar(id){
-    let id             = document.getElementById("ID-" +id).value;
     let nome           = document.getElementById("nome-" + id).value;
     let formaPagamento = document.getElementById("formaPagamento-" + id).value;
     let statusLinha    = document.getElementById("status-" + id).checked ? 'Ativa' : 'Inativa';
@@ -62,7 +70,7 @@ async function alterar(id){
     fd.append("status_linha", statusLinha);
     fd.append("valor_tarifa", valorTarifa);
 
-    const retorno = await fetch("http://localhost/busmap/php/Fernanda/linha_alterar.php?id=" + id,
+    const retorno = await fetch("../../php/Fernanda/linha_alterar.php?id=" + id,
         {
           method: 'POST',
           body: fd
@@ -72,5 +80,6 @@ async function alterar(id){
 }
 
 document.getElementById("btnVoltar")?.addEventListener("click", () => {
-    window.location.href = "http://localhost/busmap/home/Fernanda/linha.html";
+    window.location.href = "linha.html";
 });
+

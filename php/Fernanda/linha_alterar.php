@@ -1,4 +1,5 @@
-<?php 
+<?php
+include_once ('../valida_admin.php'); // só admin pode alterar
 include_once ('../conexao.php');
 $retorno = [
     'status' => '',
@@ -23,11 +24,25 @@ if (isset($_GET['id'])){
             'data' => []
         ];
     } else{
-        $retorno = [
-                'status'    => 'nok',
-                'mensagem'  => 'Não foi possível alterar o registro.'.json_encode($_GET),
+        // affected_rows = 0 acontece quando os dados são iguais aos do banco
+        // OU quando o id não existe; o SELECT separa os dois casos
+        $busca = $conexao->prepare("SELECT id FROM linha WHERE id = ?");
+        $busca->bind_param('s',$_GET['id']);
+        $busca->execute();
+        if($busca->get_result()->num_rows > 0){
+            $retorno = [
+                'status'    => 'ok',
+                'mensagem'  => 'Nenhuma alteração feita: os dados já estavam iguais.',
                 'data'      => []
             ];
+        }else{
+            $retorno = [
+                'status'    => 'nok',
+                'mensagem'  => 'Linha não encontrada.',
+                'data'      => []
+            ];
+        }
+        $busca->close();
     }
     $stmt-> close();
 }else{

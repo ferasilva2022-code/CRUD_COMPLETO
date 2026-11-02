@@ -2,9 +2,30 @@
 //CADASTRAR AS LINHAS
 const formCadastroLinha = document.getElementById('formularioCadastroLinha'); //puxando o formulário la do html das linhas
 
-document.addEventListener('DOMContentLoaded', () =>{
+let ehAdmin = false; // admin pode cadastrar, editar e remover; usuário comum só visualiza
+
+document.addEventListener('DOMContentLoaded', async () =>{
+    const usuario = await valida_sessao();
+    document.getElementById('usuarioLogado').textContent = usuario.nome;
+    ehAdmin = usuario.tipo == 'admin';
+    if (ehAdmin) {
+        document.getElementById('areaCadastro').classList.remove('d-none');
+        document.getElementById('colunaAcoes').classList.remove('d-none');
+    }
     carregarLinhas();
 });
+
+document.getElementById('logoff').addEventListener('click', () => {
+    logoff();
+});
+
+async function logoff(){
+    const retorno = await fetch("../../php/logoff.php");
+    const resposta = await retorno.json();
+    if(resposta.status == "ok"){
+        window.location.href = '../../login/';
+    }
+}
 
 formCadastroLinha.addEventListener('submit', async(event) =>{
     event.preventDefault(); // esse trem serve para a página não recarregar
@@ -18,7 +39,7 @@ formCadastroLinha.addEventListener('submit', async(event) =>{
     let dados = Object.fromEntries(formData); // tranforma os valores em objeto
     formCadastroLinha.reset(); // limpa o formulário (depois de pegar os dados)
 
-    const resposta = await fetch ("http://localhost/busmap/php/Fernanda/linha_novo.php", {
+    const resposta = await fetch ("../../php/Fernanda/linha_novo.php", {
         method: 'POST',
         headers: {'Content-Type': 'application/json' },
         body: JSON.stringify(dados) // envia uma requisição em formato de texto - LEMBRA DE LIGAR O APACHE FERNANDA!
@@ -44,7 +65,7 @@ async function carregarLinhas() {
     //     listaLinhas = [{ id: 'B02', nome: 'Maracanã/Cabral', forma_pagamento:'Somente Cartão', status: 'Ativa', valor_tarifa: 'R$6,00' }];
     //     localStorage.setItem('linhas_de_onibus', JSON.stringify(listaLinhas));
     // }
-    const retorno = await fetch ("http://localhost/busmap/php/Fernanda/linha_detalhe.php");
+    const retorno = await fetch ("../../php/Fernanda/linha_detalhe.php");
     const resposta = await retorno.json();
     // Percorre a lista criando as linhas (<tr>) da tabela
     for (let obj of resposta.data) {
@@ -55,10 +76,11 @@ async function carregarLinhas() {
                 <td>${obj.forma_de_pagamento}</td>
                 <td>${obj.status_linha}</td>
                 <td>${obj.valor_tarifa}</td>
+                ${ehAdmin ? `
                 <td>
                     <button type="button" class="btn btn-warning btn-sm" onclick="editarLinha('${obj.id}')">Editar</button>
                     <button type="button" class="btn btn-danger btn-sm" onclick="excluir('${obj.id}')">Remover</button>
-                </td>
+                </td>` : ''}
             </tr>`;
     }
 }

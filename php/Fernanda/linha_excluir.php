@@ -1,4 +1,5 @@
 <?php
+include_once ('../valida_admin.php'); // só admin pode excluir
 include_once ('../conexao.php');
 $retorno = [
     'status' => '',
