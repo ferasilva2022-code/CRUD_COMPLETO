@@ -1,0 +1,7 @@
+# Durante o desenvolvimento: o navegador sempre confere se há versão nova
+# dos arquivos (senão o Chrome mostra .html/.js/.css antigos do cache).
+<IfModule mod_headers.c>
+    <FilesMatch "\.(html|js|css)$">
+        Header set Cache-Control "no-cache"
+    </FilesMatch>
+</IfModule>

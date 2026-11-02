@@ -14,22 +14,23 @@
             <div class="container">
                 <a class="navbar-brand" href="../../index.html">BusMap</a>
                 <div class="navbar-nav">
-                    <a class="nav-link" href="../Medina/index.html">Usuários</a>
-                    <a class="nav-link" href="linha.html">Linhas</a>
+                    <a class="nav-link somente-admin" href="../Medina/index.html">Usuários</a>
+                    <a class="nav-link" href="../Fernanda/linha.html">Linhas</a>
                     <a class="nav-link" href="../Leonardo/itinerario.html">Itinerários</a>
                     <a class="nav-link" href="../Alice/ponto.html">Pontos</a>
                     <a class="nav-link" href="../Luiz/horario.html">Horários</a>
                 </div>
-                <div class="d-flex align-items-center gap-3">
-                    <span class="text-white" id="usuarioLogado"></span>
-                    <button type="button" id="logoff" class="btn btn-outline-light btn-sm">Logoff</button>
+                <!-- o nome do usuário é preenchido pelo js/valida_sessao.js -->
+                <div class="navbar-usuario">
+                    <span id="usuarioLogado"></span>
+                    <button type="button" class="btn btn-outline-light btn-sm" onclick="logoff()">Logoff</button>
                 </div>
             </div>
         </nav>
     </header>
 
-    <!-- Formulário no modelo Card (escondido até confirmar que é admin) -->
-    <div class="container my-5 d-none" id="areaCadastro">
+    <!-- Formulário no modelo Card (somente-admin: escondido para usuário comum) -->
+    <div class="container my-5 somente-admin" id="areaCadastro">
         <div class="card shadow-sm p-4">
             <h2 class="card-title mb-4">Cadastrar Linha</h2>
             <form id="formularioCadastroLinha">
@@ -93,7 +94,7 @@
                         <th>FORMA DE PAGAMENTO ACEITA</th>
                         <th>STATUS</th>
                         <th>VALOR DA TARIFA</th>
-                        <th class="d-none" id="colunaAcoes">AÇÕES</th>
+                        <th class="somente-admin">AÇÕES</th>
                     </tr>
                 </thead>
                 <tbody id="linhacards"></tbody>

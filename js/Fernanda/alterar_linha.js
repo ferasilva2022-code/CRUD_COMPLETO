@@ -8,13 +8,9 @@ document.addEventListener("DOMContentLoaded", async () => {
     // só busca se estiver na página de alteração (no linha.html não existe a tabelaLinhas)
     if(!document.getElementById("tabelaLinhas")) return;
 
-    // usuário comum não pode alterar: volta para a lista
-    const usuario = await valida_sessao();
-    if(usuario.tipo != 'admin'){
-        alert("Apenas administradores podem alterar linhas.");
-        window.location.href = "linha.html";
-        return;
-    }
+    // usuário comum não pode alterar: o valida_sessao.js já manda de volta para a lista
+    const usuario = await sessao;
+    if(usuario == null || usuario.tipo != 'admin') return;
 
     // linha_alterar.html?id=B02 mostra só a linha B02; sem id, mostra todas
     const url = new URLSearchParams(window.location.search);

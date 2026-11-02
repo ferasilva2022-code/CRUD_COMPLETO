@@ -53,7 +53,7 @@ function listarRegistros() {
             <td>${item.dia}</td>
             <td>${item.tabela}</td>
             <td>${item.adaptacao}</td>
-            <td>
+            <td class="somente-admin">
                 <button class="btn btn-warning btn-sm" onclick="editarRegistro(${item.id_tabela_linha})">Editar</button>
                 <button class="btn btn-danger btn-sm" onclick="excluirRegistro(${item.id_tabela_linha})">Excluir</button>
             </td>

@@ -1,4 +1,4 @@
-document.addEventListener("DOMContentLoaded", () => {
+document.addEventListener("DOMContentLoaded", async () => {
     // Garante que exista a "tabela" itinerarios no localStorage (cria vazia se não existir)
     verificaItinerarios();
     // Lê os dados do localStorage e monta a tabela HTML na tela
@@ -14,9 +14,13 @@ document.addEventListener("DOMContentLoaded", () => {
     // redirecionar de volta pra essa mesma página depois de excluir/salvar
     const url = window.location.origin + window.location.pathname;
 
+    // Usuário logado (vem do js/valida_sessao.js)
+    const usuario = await sessao;
+
     // Se veio "acao" e "id" na URL, significa que o usuário clicou em Editar ou Excluir
     // então já executamos a ação correspondente assim que a página carrega
-    if(acao !== null && id !== null){
+    // (só para admin: o usuário comum não pode alterar nem excluir, nem digitando a URL)
+    if(acao !== null && id !== null && usuario != null && usuario.tipo == "admin"){
         executaAcao(acao, id, url);
     }
 
@@ -102,7 +106,7 @@ function carregaRegistros(){
                             <th>Código da Linha</th>
                             <th>Sentido</th>
                             <th>Situação</th>
-                            <th>Ações</th>
+                            <th class="somente-admin">Ações</th>
                         </tr>
                     </thead>
                     <tbody>`;
@@ -120,7 +124,7 @@ function carregaRegistros(){
                             <td>${item.codigo_linha}</td>
                             <td>${item.sentido}</td>
                             <td>${badgeStatus(item.ativo)}</td>
-                            <td>
+                            <td class="somente-admin">
                                 <a href='itinerario.html?id=${item.id_itinerario}&acao=alterar'>Editar</a>
                                 &nbsp;|&nbsp;
                                 <a href='itinerario.html?id=${item.id_itinerario}&acao=excluir'>Excluir</a>

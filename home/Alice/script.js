@@ -40,14 +40,21 @@ function listar() {
     //Limpa o conteúdo dessa div.
     container.innerHTML = "";
 
+    // Se não tem nenhum ponto salvo, mostra um aviso em vez da caixa vazia
+    if (lista.length == 0) {
+        container.innerHTML = "<p class='text-center text-secondary my-3'>Nenhum ponto cadastrado ainda.</p>";
+        return;
+    }
+
     let indice = 0;
     // Usando for...of igual ao modelo do professor
     for (let item of lista) {  //Percorre o array ponto por ponto. 
         container.innerHTML += `
             <div>
                 <p><strong>Ponto:</strong> ${item.ponto} | <strong>Linha:</strong> ${item.linha} | <strong>Status:</strong> ${item.status}</p>
-                <button onclick="carregar(${indice})">Editar</button>
-                <button onclick="excluir(${indice})">Excluir</button>
+                <!-- somente-admin: usuário comum não vê Editar/Excluir -->
+                <button class="somente-admin" onclick="carregar(${indice})">Editar</button>
+                <button class="somente-admin" onclick="excluir(${indice})">Excluir</button>
             </div>
             <hr>
         `;

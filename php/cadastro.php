@@ -11,11 +11,16 @@
     $email    = trim($_POST['email'] ?? '');
     $senha    = $_POST['senha'] ?? '';
     $telefone = trim($_POST['telefone'] ?? '');
-    // quem se cadastra pela tela de login é sempre usuário comum;
-    // o tipo é definido aqui e não vem do front, para ninguém virar admin sozinho
-    $tipo     = 'usuario';
+    $tipo     = $_POST['tipo'] ?? '';
 
-    if($nome == '' || $email == '' || $senha == ''){
+    // só aceita os dois tipos que o sistema conhece (é o tipo que decide o que aparece ao entrar)
+    if($tipo != 'admin' && $tipo != 'usuario'){
+        $retorno = [
+            'status'    => 'nok',
+            'mensagem'  => 'Tipo inválido. Escolha Admin ou Usuário.',
+            'data'      => []
+        ];
+    }else if($nome == '' || $email == '' || $senha == ''){
         $retorno = [
             'status'    => 'nok',
             'mensagem'  => 'Nome, email e senha são obrigatórios.',

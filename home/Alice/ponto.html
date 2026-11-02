@@ -15,19 +15,25 @@
             <div class="container">
                 <a class="navbar-brand" href="../../index.html">BusMap</a>
                 <div class="navbar-nav">
-                    <a class="nav-link" href="../Medina/index.html">Usuários</a>
+                    <a class="nav-link somente-admin" href="../Medina/index.html">Usuários</a>
                     <a class="nav-link" href="../Fernanda/linha.html">Linhas</a>
                     <a class="nav-link" href="../Leonardo/itinerario.html">Itinerários</a>
-                    <a class="nav-link" href="ponto.html">Pontos</a>
+                    <a class="nav-link" href="../Alice/ponto.html">Pontos</a>
                     <a class="nav-link" href="../Luiz/horario.html">Horários</a>
+                </div>
+                <!-- o nome do usuário é preenchido pelo js/valida_sessao.js -->
+                <div class="navbar-usuario">
+                    <span id="usuarioLogado"></span>
+                    <button type="button" class="btn btn-outline-light btn-sm" onclick="logoff()">Logoff</button>
                 </div>
             </div>
         </nav>
     </header>
-    <div>
+    <!-- Cadastro (somente-admin: escondido para usuário comum) -->
+    <div class="somente-admin">
         <h2> Cadastro de ponto de Ônibus</h2>
     </div>
-   <form id="FormPonto">
+   <form id="FormPonto" class="somente-admin">
   <div>
      <label for="ponto">Nome do ponto: </label>
      <input type="text" id="ponto">
@@ -53,6 +59,8 @@
         </h2>
         <div id="Pontos"> </div> 
     </div>
+    <!-- login, Logoff e permissões (admin / usuário comum) -->
+    <script src="../../js/valida_sessao.js"></script>
     <script src="script.js"> </script>
 </body>
 </html>

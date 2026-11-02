@@ -41,6 +41,33 @@ body {
     color: #DCE6F0 !important;
 }
 
+/* nome do usuário + Logoff (lado direito da navbar, igual em todas as abas).
+   Os seletores são mais fortes de propósito, para o CSS de cada página
+   (ex.: a regra "button { ... }" de Pontos) não mudar o botão. */
+.navbar .navbar-usuario {
+    display: flex;
+    align-items: center;
+    gap: 16px;
+    color: #FFFFFF;
+    font-size: 15px;
+}
+
+.navbar .navbar-usuario .btn {
+    margin: 0;
+    padding: 4px 10px;
+    font-size: 14px;
+    font-weight: normal;
+    color: #FFFFFF;
+    background-color: transparent;
+    border: 1px solid #FFFFFF;
+    border-radius: 4px;
+}
+
+.navbar .navbar-usuario .btn:hover {
+    background-color: #FFFFFF;
+    color: #1F4E78;
+}
+
 /* ==================== Home ==================== */
 
  .hero {
@@ -77,6 +104,15 @@ body {
     background-color: #173A5E;
     color: #FFFFFF;
     transform: translateY(-2px);
+}
+
+
+/* ==================== Permissões ==================== */
+
+/* tudo que tem a classe .somente-admin fica escondido até o
+   js/valida_sessao.js confirmar que é admin (ele coloca a classe "admin" no body) */
+body:not(.admin) .somente-admin {
+    display: none !important;
 }
 
 

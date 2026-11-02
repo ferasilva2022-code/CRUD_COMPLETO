@@ -2,30 +2,10 @@
 //CADASTRAR AS LINHAS
 const formCadastroLinha = document.getElementById('formularioCadastroLinha'); //puxando o formulário la do html das linhas
 
-let ehAdmin = false; // admin pode cadastrar, editar e remover; usuário comum só visualiza
-
-document.addEventListener('DOMContentLoaded', async () =>{
-    const usuario = await valida_sessao();
-    document.getElementById('usuarioLogado').textContent = usuario.nome;
-    ehAdmin = usuario.tipo == 'admin';
-    if (ehAdmin) {
-        document.getElementById('areaCadastro').classList.remove('d-none');
-        document.getElementById('colunaAcoes').classList.remove('d-none');
-    }
+// login, Logoff e o que o admin pode ver ficam no js/valida_sessao.js
+document.addEventListener('DOMContentLoaded', () =>{
     carregarLinhas();
 });
-
-document.getElementById('logoff').addEventListener('click', () => {
-    logoff();
-});
-
-async function logoff(){
-    const retorno = await fetch("../../php/logoff.php");
-    const resposta = await retorno.json();
-    if(resposta.status == "ok"){
-        window.location.href = '../../login/';
-    }
-}
 
 formCadastroLinha.addEventListener('submit', async(event) =>{
     event.preventDefault(); // esse trem serve para a página não recarregar
@@ -76,11 +56,10 @@ async function carregarLinhas() {
                 <td>${obj.forma_de_pagamento}</td>
                 <td>${obj.status_linha}</td>
                 <td>${obj.valor_tarifa}</td>
-                ${ehAdmin ? `
-                <td>
+                <td class="somente-admin">
                     <button type="button" class="btn btn-warning btn-sm" onclick="editarLinha('${obj.id}')">Editar</button>
                     <button type="button" class="btn btn-danger btn-sm" onclick="excluir('${obj.id}')">Remover</button>
-                </td>` : ''}
+                </td>
             </tr>`;
     }
 }

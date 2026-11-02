@@ -6,6 +6,7 @@ async function cadastrar(){
     var nome     = document.getElementById("cadNome").value;
     var email    = document.getElementById("cadEmail").value;
     var senha    = document.getElementById("cadSenha").value;
+    var tipo     = document.getElementById("cadTipo").value;
     var telefone = document.getElementById("cadTelefone").value;
 
     if(nome.trim() == "" || email.trim() == "" || senha.trim() == ""){
@@ -17,6 +18,7 @@ async function cadastrar(){
     fd.append("nome", nome);
     fd.append("email", email);
     fd.append("senha", senha);
+    fd.append("tipo", tipo);
     fd.append("telefone", telefone);
 
     const retorno = await fetch("../php/cadastro.php",
