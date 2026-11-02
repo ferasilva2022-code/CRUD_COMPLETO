@@ -3,6 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>BusMap - Usuários</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.13.1/font/bootstrap-icons.min.css">
     <link rel="stylesheet" href="../../style.css">
@@ -29,69 +30,65 @@
             </div>
         </nav>
     </header>
+
 <div class="container my-5">
     <div class="card shadow-sm p-4">
-        <h2 class="card-title mb-4">Cadastrar usuário</h2>
+        <h2 class="card-title mb-4" id="titulo-form">Cadastrar usuário</h2>
+        <!-- vazio = cadastrando; com número = alterando esse usuário -->
+        <input type="hidden" id="id">
         <div class="row g-3">
-            <!-- Nome -->
             <div class="col-md-8">
                 <label for="nome" class="form-label">Nome Completo</label>
-                <input type="text" name="nome" id="nome" class="form-control">
+                <input type="text" id="nome" class="form-control" maxlength="100" placeholder="Ex: Alberto Augusto">
             </div>
-            <!-- Idade -->
             <div class="col-md-4">
-                <label for="idade" class="form-label">Idade</label>
-                <input type="number" name="idade" id="idade" class="form-control">
+                <label for="telefone" class="form-label">Telefone</label>
+                <input type="text" id="telefone" class="form-control" maxlength="14" placeholder="(41)99999-9999">
             </div>
-            <!-- Email -->
             <div class="col-md-6">
                 <label for="email" class="form-label">Email</label>
-                <input type="email" name="email" id="email" class="form-control">
+                <input type="email" id="email" class="form-control" maxlength="200" placeholder="Ex: alberto@gmail.com">
             </div>
-            <!-- Senha -->
             <div class="col-md-6">
                 <label for="senha" class="form-label">Senha</label>
-
                 <div class="input-group">
-                    <input type="password" name="senha" id="senha" class="form-control">
+                    <input type="password" id="senha" class="form-control" placeholder="*********">
                     <button class="btn btn-outline-secondary" type="button" id="mostrar-senha"><i class="bi bi-eye"></i></button>
                 </div>
+                <div class="form-text" id="dica-senha"></div>
             </div>
-            <!-- Cargo -->
+            <!-- os valores precisam bater com o banco (admin / usuario) -->
             <div class="col-md-6">
-                <label for="cargo" class="form-label">Cargo</label>
-                <select name="cargo" id="cargo" class="form-select">
-                    <option value="cliente">Cliente</option>
+                <label for="tipo" class="form-label">Tipo</label>
+                <select id="tipo" class="form-select">
+                    <option value="usuario">Usuário</option>
                     <option value="admin">Administrador</option>
                 </select>
             </div>
         </div>
-        <div id="botoes" class="mt-4">
-            <button type="button" id="adicionar-btn" class="btn btn-primary px-4">Adicionar</button>
+        <div class="mt-4 d-flex gap-2">
+            <button type="button" id="enviar" class="btn btn-primary px-4">Adicionar</button>
+            <!-- só aparece no modo alteração; recarregar a página volta pro cadastro -->
+            <button type="button" id="cancelar" class="btn btn-secondary px-4 d-none" onclick="window.location.reload()">Cancelar</button>
         </div>
-
     </div>
 </div>
+
 <div class="container mb-5">
-    <h2 class="mb-3">Usuarios Cadastrados</h2>
-    <div class="table-responsive">
-        <table class="table table-striped table-hover align-middle">
-            <thead>
-                <tr>
-                    <th>Nome</th>
-                    <th>Idade</th>
-                    <th>Email</th>
-                    <th>Cargo</th>
-                    <th>Ações</th>
-                </tr>
-            </thead>
-            <tbody id="lista-usuarios">
-            </tbody>
-        </table>
+    <div class="d-flex flex-wrap justify-content-between align-items-center gap-2 mb-3">
+        <h2 class="m-0">Usuários Cadastrados</h2>
+        <div class="input-group busca">
+            <input type="text" id="termo-busca" class="form-control" placeholder="Buscar por nome ou email">
+            <button type="button" id="buscar-btn" class="btn btn-outline-secondary"><i class="bi bi-search"></i></button>
+        </div>
     </div>
+    <!-- a tabela é montada pelo preencherTabela() do script.js -->
+    <div id="lista" class="table-responsive"></div>
 </div>
 <!-- login, Logoff e permissões (admin / usuário comum) -->
 <script src="../../js/valida_sessao.js"></script>
+<script src="../../js/Medina/alterar_usuario.js"></script>
+<script src="../../js/Medina/excluir_usuario.js"></script>
 <script src="script.js"></script>
 </body>
 </html>

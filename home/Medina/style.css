@@ -14,30 +14,24 @@ table thead th {
     color: white !important;
 }
 
-
 /* FORMULÁRIO */
 
 .card {
     border: none;
 }
 
-#adicionar-btn {
+#enviar {
     background-color: #1F4E78;
     border-color: #1F4E78;
 }
 
-#adicionar-btn:hover {
+#enviar:hover {
     background-color: #173A5E;
     border-color: #173A5E;
 }
 
-#alterar-btn {
-    background-color: #1F4E78;
-    border-color: #1F4E78;
-    color: #FFF;
-}
+/* BUSCA */
 
-#alterar-btn:hover {
-    background-color: #173A5E;
-    border-color: #173A5E;
+.busca {
+    max-width: 320px;
 }
