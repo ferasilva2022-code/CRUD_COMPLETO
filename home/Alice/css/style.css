@@ -147,3 +147,66 @@ table td {
 table tbody tr {
     border-bottom: 1px solid #ddd;
 }
+/* Ajustes exclusivos da tela de pontos */
+.busca-pontos { max-width: 750px; margin: 20px auto; }
+.busca-pontos input { padding: 10px; border: 1px solid #ccc; border-radius: 4px; max-width: 320px; width: 100%; }
+.busca-pontos label { display: block; font-weight: bold; }
+.item-ponto { padding: 12px 0; border-bottom: 1px solid #ddd; }
+#detalhes { max-width: 750px; margin: 15px auto; background: #fff; border: 1px solid #cbd5e1; border-radius: 6px; padding: 18px; }
+#mensagem { margin-top: 12px; font-weight: bold; }
+button:disabled { opacity: .5; cursor: not-allowed; }
+
+
+/* Layout definitivo da listagem de pontos — apenas módulo Alice */
+main.container > .busca-pontos,
+main.container > .secao-pontos .busca-pontos {
+    width: 100%;
+    max-width: 750px;
+    margin: 20px auto 24px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-wrap: wrap;
+    gap: 10px;
+}
+main.container .busca-pontos label {
+    display: inline-block;
+    margin: 0;
+    white-space: nowrap;
+}
+main.container .busca-pontos input {
+    width: 220px;
+    max-width: 100%;
+    flex: 0 1 220px;
+    margin: 0;
+}
+main.container .busca-pontos button { margin: 0; }
+main.container #Pontos {
+    width: 100%;
+    max-width: 750px;
+    margin: 0 auto 24px;
+    padding: 22px;
+    box-sizing: border-box;
+    background: #fff;
+    border-radius: 8px;
+}
+main.container #Pontos .item-ponto {
+    display: flex;
+    align-items: flex-start;
+    flex-wrap: wrap;
+    gap: 8px;
+    margin: 0 0 14px;
+    padding: 16px;
+    background: #f6f9fc;
+    border: 1px solid #dce4ed;
+    border-radius: 6px;
+}
+main.container #Pontos .item-ponto:last-child { margin-bottom: 0; }
+main.container #Pontos .item-ponto p {
+    flex-basis: 100%;
+    margin: 0 0 4px;
+    overflow-wrap: anywhere;
+    line-height: 1.5;
+}
+main.container #Pontos .item-ponto button { margin: 0; }
+main.container .secao-pontos { max-width: 750px; margin: 24px auto; }
