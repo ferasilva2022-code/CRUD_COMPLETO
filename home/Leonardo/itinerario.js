@@ -1,105 +1,77 @@
+// Caminhos relativos a partir de home/Leonardo/itinerario.html
+// (assim funciona com qualquer nome de pasta dentro do htdocs)
+const API = "../../php/Leonardo/";
+
+// horários do itinerário que está sendo editado (o PHP de alterar precisa receber eles de volta)
+let horarioInicioAtual = "00:00:00";
+let horarioFimAtual = "00:00:00";
+
 document.addEventListener("DOMContentLoaded", async () => {
-    // Garante que exista a "tabela" itinerarios no localStorage (cria vazia se não existir)
-    verificaItinerarios();
-    // Lê os dados do localStorage e monta a tabela HTML na tela
+    // READ: busca os itinerários no banco e monta a tabela na tela
     carregaRegistros();
 
-    // adicionei valores pra saber se o usuário clicou em Editar/Excluir
-    const parametros = new URLSearchParams(window.location.search);    // URLSearchParams lê os parâmetros que vêm depois do "?" na URL
+    // lê os parâmetros da URL (?acao=alterar&id=1) para saber se clicou em Editar/Excluir
+    const parametros = new URLSearchParams(window.location.search);
     const acao = parametros.get("acao"); // "alterar" ou "excluir"
     const id = parametros.get("id");     // id do registro clicado
 
-    // Monta a URL "limpa" (sem os parâmetros ?id=...&acao=...) pra poder
-    
-    // redirecionar de volta pra essa mesma página depois de excluir/salvar
+    // URL "limpa" (sem ?id=...&acao=...) para voltar depois de excluir/salvar
     const url = window.location.origin + window.location.pathname;
 
     // Usuário logado (vem do js/valida_sessao.js)
     const usuario = await sessao;
 
-    // Se veio "acao" e "id" na URL, significa que o usuário clicou em Editar ou Excluir
-    // então já executamos a ação correspondente assim que a página carrega
-    // (só para admin: o usuário comum não pode alterar nem excluir, nem digitando a URL)
-    if(acao !== null && id !== null && usuario != null && usuario.tipo == "admin"){
+    // só admin pode alterar/excluir (o usuário comum não pode, nem digitando a URL)
+    if (acao !== null && id !== null && usuario != null && usuario.tipo == "admin") {
         executaAcao(acao, id, url);
     }
 
-    // Evento de clique do botão "Adicionar" (parte do CREATE do CRUD)
-    document.getElementById("btnAdicionar").addEventListener("click", () => {
-        // Pega os valores digitados/selecionados no formulário
-        var codigoLinha = document.getElementById("codigoLinha").value;
-        var sentido = document.getElementById("sentido").value;
-        var ativo = document.getElementById("ativo").value; // vem como texto "true"/"false" do <select>
-//
-        // Validação simples: campos obrigatórios não podem estar vazios
-        if(codigoLinha == "" || sentido == ""){
-            document.getElementById("msgForm").textContent = "Preencha código da linha e sentido.";
-            return; // para a execução aqui, não deixa continuar e salvar
-        }
+    // CREATE: botão "Adicionar"
+    document.getElementById("btnAdicionar").addEventListener("click", async () => {
+        const codigoLinha = document.getElementById("codigoLinha").value.trim();
+        const sentido = document.getElementById("sentido").value.trim();
+        const ativo = document.getElementById("ativo").value; // "true" ou "false"
 
-        // Limpa mensagem de erro caso tenha passado na validação
+        if (codigoLinha == "" || sentido == "") {
+            document.getElementById("msgForm").textContent = "Preencha código da linha e sentido.";
+            return;
+        }
         document.getElementById("msgForm").textContent = "";
 
-        // Monta o objeto que representa uma "linha" da tabela itinerario
-        var obj = {
-            id_itinerario: geraNovoId(), // gera um ID novo (chave primária)
-            codigo_linha: codigoLinha,
-            sentido: sentido,
-            ativo: ativo == "true" // converte o texto "true"/"false" pra booleano de verdade
-        };
-//
-        // Lê o array atual do localStorage, adiciona o novo objeto no final
-        var itinerarios = JSON.parse(localStorage.getItem("itinerarios"));
-        itinerarios.push(obj);
-        //e salva o array atualizado de volta (sempre como texto/JSON)
-        localStorage.setItem("itinerarios", JSON.stringify(itinerarios));
-        // Recarrega a página pra mostrar a tabela atualizada
-        window.location.reload();
+        // envia os dados em JSON para o PHP (mesmo padrão do linha.js)
+        const resposta = await fetch(API + "itinerario_novo.php", {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({ codigoLinha: codigoLinha, sentido: sentido, ativo: ativo })
+        });
+        const respostaJSON = await resposta.json().catch(() => ({ mensagem: "Erro ao falar com o servidor." }));
+
+        alert(respostaJSON.mensagem);
+        if (respostaJSON.status == "ok") {
+            window.location.reload();
+        }
     });
 });
 
-// Função de "inicialização": se ainda não existe a chave "itinerarios" no
-// localStorage, cria ela com um array vazio "[]". Evita erro de "null" nas outras funções.
-function verificaItinerarios(){
-    var itinerarios = localStorage.getItem("itinerarios");
-    if(itinerarios == null){
-        localStorage.setItem("itinerarios", JSON.stringify([]));
-    }
-}
+// READ: busca todos os itinerários no PHP e monta a tabela HTML
+async function carregaRegistros() {
+    const lista = document.getElementById("listaItinerarios");
 
-// Gera um novo ID pro próximo registro, pegando o maior ID já existente + 1
-// (simula o auto-incremento de uma chave primária de banco de dados)
-function geraNovoId(){
-    var itinerarios = JSON.parse(localStorage.getItem("itinerarios"));
-
-    // Se a lista estiver vazia, começa do ID 1
-    if(itinerarios.length == 0){
-        return 1;
-    }
-
-    // Percorre todos os itens procurando o maior id_itinerario já usado
-    var maiorId = 0;
-    itinerarios.forEach((item) => {
-        if(item.id_itinerario > maiorId){
-            maiorId = item.id_itinerario;
-        }
-    });
-
-    return maiorId + 1;
-}
-
-// Função do READ do CRUD: lê os dados salvos e monta a tabela HTML
-function carregaRegistros(){
-    var itinerarios = JSON.parse(localStorage.getItem("itinerarios"));
-
-    // Se não tem nenhum registro salvo, mostra uma mensagem em vez da tabela
-    if(itinerarios.length == 0){
-        document.getElementById("listaItinerarios").innerHTML = "<p>Nenhum itinerário cadastrado ainda.</p>";
+    let resposta;
+    try {
+        const retorno = await fetch(API + "itinerario_listar.php");
+        resposta = await retorno.json();
+    } catch (erro) {
+        lista.innerHTML = "<p>Não foi possível carregar os itinerários. Confira o Apache, o MySQL e o php/conexao.php.</p>";
         return;
     }
 
-    // Parte inicial da tabela (abre <table>, cabeçalho <thead> e abre <tbody>)
-    var tabelaP1 = `<table border="1" cellpadding="6">
+    if (resposta.status != "ok" || resposta.data.length == 0) {
+        lista.innerHTML = "<p>Nenhum itinerário cadastrado ainda.</p>";
+        return;
+    }
+
+    let tabelaP1 = `<table border="1" cellpadding="6">
                     <thead>
                         <tr>
                             <th>ID</th>
@@ -110,85 +82,96 @@ function carregaRegistros(){
                         </tr>
                     </thead>
                     <tbody>`;
-//
-    // Parte final da tabela (fecha <tbody> e </table>)
-    var tabelaP2 = `</tbody>
+    let tabelaP2 = `</tbody>
                     </table>`;
 
-    // Aqui montei, um forEach, uma linha <tr> de tabela pra cada
-    // item que estiver salvo no localStorage
-    var tabelaMeio = "";
-    itinerarios.forEach((item) => {
+    let tabelaMeio = "";
+    resposta.data.forEach((item) => {
         tabelaMeio += `<tr>
-                            <td>#${item.id_itinerario}</td>
-                            <td>${item.codigo_linha}</td>
-                            <td>${item.sentido}</td>
-                            <td>${badgeStatus(item.ativo)}</td>
+                            <td>#${item.id}</td>
+                            <td>${escapa(item.id_linha)}${item.nome_linha ? " - " + escapa(item.nome_linha) : ""}</td>
+                            <td>${escapa(item.sentido)}</td>
+                            <td>${escapa(item.situacao)}</td>
                             <td class="somente-admin">
-                                <a href='itinerario.html?id=${item.id_itinerario}&acao=alterar'>Editar</a>
+                                <a href='itinerario.html?id=${item.id}&acao=alterar'>Editar</a>
                                 &nbsp;|&nbsp;
-                                <a href='itinerario.html?id=${item.id_itinerario}&acao=excluir'>Excluir</a>
+                                <a href='itinerario.html?id=${item.id}&acao=excluir'>Excluir</a>
                             </td>
                         </tr>`;
     });
-//
-    // Junta as 3 partes (abertura + linhas + fechamento) e insere no HTML da página
-    var tabelaFinal = tabelaP1 + tabelaMeio + tabelaP2;
-    document.getElementById("listaItinerarios").innerHTML = tabelaFinal;
+
+    lista.innerHTML = tabelaP1 + tabelaMeio + tabelaP2;
 }
 
-// Função que trata as ações vindas pela URL: "excluir" (DELETE) e "alterar" (UPDATE)
-// Recebe a ação, o id do registro clicado, e a url "limpa" pra redirecionar depois
-function executaAcao(acao, id, url){
-    var itinerarios = JSON.parse(localStorage.getItem("itinerarios"));
-    // findIndex procura a POSIÇÃO (índice) do item no array cujo id bate com o id recebido
-    // usei == (não ===) porque o "id" que vem da URL é string e o id_itinerario é number
-    var indice = itinerarios.findIndex((item) => item.id_itinerario == id);
-
-    if(acao == 'excluir'){
-        // DELETE: splice(indice, 1) remove 1 item a partir daquela posição do array
-        itinerarios.splice(indice, 1);
-        alert("Itinerário excluído com sucesso!");
-
-        // Salva o array já sem o item excluído
-        localStorage.setItem("itinerarios", JSON.stringify(itinerarios));
-        // Redireciona pra página limpa (sem os parâmetros ?id=...&acao=...)
+// DELETE e UPDATE, vindos pela URL
+async function executaAcao(acao, id, url) {
+    if (acao == "excluir") {
+        // DELETE: pede confirmação e chama o PHP de excluir
+        if (!confirm("Deseja excluir o itinerário #" + id + "?")) {
+            window.location.href = url;
+            return;
+        }
+        const retorno = await fetch(API + "itinerario_excluir.php?id=" + id);
+        const resposta = await retorno.json();
+        alert(resposta.mensagem);
         window.location.href = url;
 
-    }else if(acao == 'alterar'){
-        // UPDATE (parte 1): pega o objeto que será editado e preenche o formulário
-        // com os dados atuais dele, pra o usuário poder ver e alterar
-        var obj = itinerarios[indice];
-        document.getElementById("codigoLinha").value = obj.codigo_linha;
-        document.getElementById("sentido").value = obj.sentido;
-        document.getElementById("ativo").value = obj.ativo ? "true" : "false";
-        // Desabilita o botão "Adicionar" enquanto estiver editando,
-        // pra não criar um registro novo por engano
-        document.getElementById("btnAdicionar").disabled = true;
+    } else if (acao == "alterar") {
+        // UPDATE (parte 1): busca o itinerário no banco e preenche o formulário
+        const retorno = await fetch(API + "itinerario_detalhe.php?id=" + id);
+        const resposta = await retorno.json();
 
-//
-        // Mostra o botão "Salvar", que só aparece no modo de edição
+        if (resposta.status != "ok") {
+            alert(resposta.mensagem);
+            window.location.href = url;
+            return;
+        }
+
+        const obj = resposta.data[0];
+        document.getElementById("codigoLinha").value = obj.id_linha;
+        document.getElementById("sentido").value = obj.sentido;
+        document.getElementById("ativo").value = obj.situacao == "Ativo" ? "true" : "false";
+        horarioInicioAtual = obj.horario_inicio;
+        horarioFimAtual = obj.horario_fim;
+
+        // desabilita "Adicionar" durante a edição e mostra "Salvar Alteração"
+        document.getElementById("btnAdicionar").disabled = true;
         document.getElementById("btnSalvar").style.display = "inline-block";
 
-        // UPDATE (parte 2): quando clicar em "Salvar", pega os valores atuais
-        // do formulário e sobrescreve os dados do item no array, na mesma posição (indice)
-        document.getElementById("btnSalvar").addEventListener("click", () => {
-            itinerarios[indice].codigo_linha = document.getElementById("codigoLinha").value;
-            itinerarios[indice].sentido = document.getElementById("sentido").value;
-            itinerarios[indice].ativo = document.getElementById("ativo").value == "true";
-            // Salva o array já atualizado de volta no localStorage
-            localStorage.setItem("itinerarios", JSON.stringify(itinerarios));
-            // Redireciona de volta pra página limpa
-            window.location.href = url;
+        // UPDATE (parte 2): ao clicar em Salvar, manda os valores para o PHP de alterar
+        document.getElementById("btnSalvar").addEventListener("click", async () => {
+            const codigoLinha = document.getElementById("codigoLinha").value.trim();
+            const sentido = document.getElementById("sentido").value.trim();
+
+            if (codigoLinha == "" || sentido == "") {
+                document.getElementById("msgForm").textContent = "Preencha código da linha e sentido.";
+                return;
+            }
+
+            const fd = new FormData();
+            fd.append("id_linha", codigoLinha);
+            fd.append("sentido", sentido);
+            fd.append("situacao", document.getElementById("ativo").value == "true" ? "Ativo" : "Inativo");
+            fd.append("horario_inicio", horarioInicioAtual);
+            fd.append("horario_fim", horarioFimAtual);
+
+            const ret = await fetch(API + "itinerario_alterar.php?id=" + id, {
+                method: "POST",
+                body: fd
+            });
+            const res = await ret.json();
+            alert(res.mensagem);
+            if (res.status == "ok") {
+                window.location.href = url;
+            }
         });
-//
-    }else{
-        // Caso a "acao" da URL não seja nem "alterar" nem "excluir" (não deveria acontecer)
-        console.log("Algo deu muito errado");
+
+    } else {
+        console.log("Ação inválida na URL");
     }
 }
 
-// Função auxiliar só pra transformar o booleano "ativo" em um texto mais bonito pra tela
-function badgeStatus(ativo){
-    return ativo ? "Ativo" : "Inativo";
+// evita que texto com < ou > quebre o HTML da tabela
+function escapa(texto) {
+    return String(texto ?? "").replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;");
 }
