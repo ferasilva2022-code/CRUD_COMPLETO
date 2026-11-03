@@ -1,0 +1,149 @@
+
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    background-color: #F8F9FA;
+    font-family: Arial, Helvetica, sans-serif;
+    color: #333;
+}
+
+/* =========================
+   MENU DE NAVEGAÇÃO
+   ========================= */
+
+header {
+    background-color: #1F4E78;
+    margin-bottom: 25px;
+    border-radius: 5px;
+}
+
+/* =========================
+   TÍTULOS
+   ========================= */
+
+h2 {
+    color: #1F4E78;
+    margin-top: 20px;
+    margin-bottom: 15px;
+    text-align: center;
+}
+
+/* =========================
+   FORMULÁRIO
+   ========================= */
+
+#FormPonto {
+    background-color: white;
+    padding: 30px;
+    border: none;
+    border-radius: 6px;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+
+    width: 100%;
+    max-width: 750px;
+    margin: 0 auto;
+}
+
+#FormPonto label {
+    display: block;
+    margin-top: 12px;
+    margin-bottom: 5px;
+    font-weight: bold;
+    color: #333;
+}
+
+#FormPonto input,
+#FormPonto select {
+    width: 100%;
+    padding: 11px;
+    margin-bottom: 12px;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    font-family: Arial, Helvetica, sans-serif;
+    font-size: 15px;
+}
+
+#FormPonto input:focus,
+#FormPonto select:focus {
+    outline: none;
+    border-color: #1F4E78;
+}
+
+/* =========================
+   BOTÕES
+   ========================= */
+
+button {
+    background-color: #1F4E78;
+    color: white;
+    border: 1px solid #1F4E78;
+    padding: 10px 18px;
+    border-radius: 4px;
+    cursor: pointer;
+    font-weight: bold;
+    margin-right: 5px;
+    margin-top: 10px;
+}
+
+button:hover {
+    background-color: #173A5E;
+    border-color: #173A5E;
+}
+
+/* Botão Alterar */
+
+#btn_alterar {
+    background-color: #1F4E78;
+    border-color: #1F4E78;
+    color: white;
+}
+
+#btn_alterar:hover {
+    background-color: #173A5E;
+    border-color: #173A5E;
+}
+
+/* =========================
+   LISTA DE PONTOS
+   ========================= */
+
+#Pontos {
+    background-color: white;
+    padding: 25px;
+    border: none;
+    border-radius: 6px;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+
+    width: 100%;
+    max-width: 750px;
+    margin: 25px auto;
+}
+
+/* =========================
+   TABELA
+   ========================= */
+
+table {
+    width: 90%;
+    margin: 20px auto;
+    border-collapse: collapse;
+}
+
+table thead th {
+    background-color: #1F4E78 !important;
+    color: white !important;
+}
+
+table th,
+table td {
+    padding: 10px;
+    text-align: center;
+}
+
+table tbody tr {
+    border-bottom: 1px solid #ddd;
+}
