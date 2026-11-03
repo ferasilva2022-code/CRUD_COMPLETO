@@ -246,3 +246,22 @@ VALUES
 
 ('030', 107, '12:00:00', 'Sábado'); 
 
+CREATE TABLE IF NOT EXISTS horarios (
+    id_tabela_linha INT AUTO_INCREMENT PRIMARY KEY,
+    codigo_linha VARCHAR(3) NOT NULL,
+    numero_ponto INT NOT NULL,
+    hora TIME NOT NULL,
+    dia VARCHAR(20) NOT NULL,
+    tabela INT NOT NULL,
+    adaptacao VARCHAR(100) NOT NULL,
+
+    FOREIGN KEY (codigo_linha) REFERENCES linha(id),
+    FOREIGN KEY (numero_ponto) REFERENCES ponto(id)
+);
+
+INSERT INTO horarios
+(codigo_linha, numero_ponto, hora, dia, tabela, adaptacao)
+VALUES
+('030', 1, '06:30:00', 'dia_util', 1, 'Rampa de acesso'),
+('B42', 2, '07:15:00', 'sabado', 2, 'Elevador');
+
