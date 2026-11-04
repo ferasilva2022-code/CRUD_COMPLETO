@@ -71,7 +71,7 @@ async function carregaRegistros() {
         return;
     }
 
-    let tabelaP1 = `<table border="1" cellpadding="6">
+    let tabelaP1 = `<table class="table table-striped table-hover align-middle">
                     <thead>
                         <tr>
                             <th>ID</th>
@@ -88,14 +88,13 @@ async function carregaRegistros() {
     let tabelaMeio = "";
     resposta.data.forEach((item) => {
         tabelaMeio += `<tr>
-                            <td>#${item.id}</td>
+                            <td>${item.id}</td>
                             <td>${escapa(item.id_linha)}${item.nome_linha ? " - " + escapa(item.nome_linha) : ""}</td>
                             <td>${escapa(item.sentido)}</td>
                             <td>${escapa(item.situacao)}</td>
                             <td class="somente-admin">
-                                <a href='itinerario.html?id=${item.id}&acao=alterar'>Editar</a>
-                                &nbsp;|&nbsp;
-                                <a href='itinerario.html?id=${item.id}&acao=excluir'>Excluir</a>
+                                <a href='itinerario.html?id=${item.id}&acao=alterar' class='btn btn-warning btn-sm'>Editar</a>
+                                <a href='itinerario.html?id=${item.id}&acao=excluir' class='btn btn-danger btn-sm'>Excluir</a>
                             </td>
                         </tr>`;
     });
@@ -134,9 +133,11 @@ async function executaAcao(acao, id, url) {
         horarioInicioAtual = obj.horario_inicio;
         horarioFimAtual = obj.horario_fim;
 
-        // desabilita "Adicionar" durante a edição e mostra "Salvar Alteração"
-        document.getElementById("btnAdicionar").disabled = true;
-        document.getElementById("btnSalvar").style.display = "inline-block";
+        // troca "Cadastrar" por "Salvar Alteração" e "Cancelar" durante a edição
+        document.getElementById("titulo-form").textContent = "Alterar Itinerário";
+        document.getElementById("btnAdicionar").classList.add("d-none");
+        document.getElementById("btnSalvar").classList.remove("d-none");
+        document.getElementById("btnCancelar").classList.remove("d-none");
 
         // UPDATE (parte 2): ao clicar em Salvar, manda os valores para o PHP de alterar
         document.getElementById("btnSalvar").addEventListener("click", async () => {
