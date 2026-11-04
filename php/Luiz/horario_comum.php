@@ -1,4 +1,3 @@
-
 <?php
 // Funções compartilhadas do CRUD de Horários.
 

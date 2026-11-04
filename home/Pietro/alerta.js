@@ -5,8 +5,8 @@
     const el=app.element;
     const form=$('nt-form'),save=$('nt-save'),feedback=$('nt-feedback');
     let pending=false,linesLoaded=false,linesLoading=false;
-    function message(text='',error=false){feedback.textContent=text;feedback.dataset.tipo=error?'erro':'ok';feedback.setAttribute('role',error?'alert':'status');}
-    function reset(){form.reset();$('nt-id').value='';$('nt-revisao').value='';$('nt-form-title').textContent='Novo alerta';save.textContent='Cadastrar alerta';$('nt-cancel').hidden=true;}
+    function message(text='',error=false){feedback.textContent=text;feedback.className=text?'alert alert-'+(error?'danger':'success'):'d-none';feedback.setAttribute('role',error?'alert':'status');}
+    function reset(){form.reset();$('nt-id').value='';$('nt-revisao').value='';$('nt-form-title').textContent='Cadastrar Alerta';save.textContent='Cadastrar';$('nt-cancel').hidden=true;}
     function lock(value){pending=value;form.querySelectorAll('button,input,select,textarea').forEach(node=>{node.disabled=value;});$('nt-list').querySelectorAll('button').forEach(node=>{node.disabled=value;});}
     function edit(item){
         if(pending)return;
@@ -14,10 +14,12 @@
         $('nt-titulo').value=item.titulo;$('nt-descricao').value=item.descricao;
         $('nt-aba').value=item.aba;$('nt-prioridade').value=item.prioridade;
         $('nt-linha').value=item.id_linha||'';$('nt-ativo').checked=Number(item.ativo)===1;
-        $('nt-form-title').textContent=`Editar alerta #${item.id}`;save.textContent='Salvar alterações';$('nt-cancel').hidden=false;
-        message('Altere os campos e clique em Salvar alterações.');$('nt-titulo').focus();
+        $('nt-form-title').textContent=`Alterar Alerta #${item.id}`;save.textContent='Salvar Alteração';$('nt-cancel').hidden=false;
+        message('Altere os campos e clique em Salvar Alteração.');$('nt-titulo').focus();
     }
-    function button(label,action,danger=false){const node=el('button',label,'nt-btn'+(danger?' nt-danger':''));node.type='button';node.disabled=pending;node.addEventListener('click',action);return node;}
+    function button(label,action,classes){const node=el('button',label,'btn btn-sm me-1 mb-1 '+classes);node.type='button';node.disabled=pending;node.addEventListener('click',action);return node;}
+    const priorityBadges={info:'text-bg-info',aviso:'text-bg-warning',urgente:'text-bg-danger'};
+    function badgeCell(label,classes){const td=el('td','');td.append(el('span',label,'badge '+classes));return td;}
     function render(){
         if(!app.ready)return;
         const options={aba:$('nt-filtro-aba').value,status:$('nt-filtro-status').value,leitura:$('nt-filtro-leitura').value,busca:$('nt-busca').value};
@@ -25,20 +27,21 @@
         const list=$('nt-list');list.replaceChildren();
         $('nt-count').textContent=`${items.length} alerta(s) encontrado(s).`;
         $('nt-read-all').disabled=pending||!app.alerts.some(a=>Number(a.ativo)===1&&!app.core.isRead(a,app.read));
-        if(!items.length){list.append(el('li',app.alerts.length?'Nenhum alerta corresponde aos filtros. Ajuste a busca ou os filtros.':'Nenhum alerta cadastrado. Use o formulário para publicar o primeiro aviso.','nt-state'));return;}
+        if(!items.length){const row=el('tr','');const td=el('td',app.alerts.length?'Nenhum alerta corresponde aos filtros. Ajuste a busca ou os filtros.':'Nenhum alerta cadastrado.','text-center text-secondary');td.colSpan=8;row.append(td);list.append(row);return;}
         for(const item of items){
-            const li=el('li','','nt-item');li.dataset.prioridade=item.prioridade;
-            li.append(el('span',app.priorityLabels[item.prioridade],`nt-chip bm-${item.prioridade}`));
+            const row=el('tr','');
             const isRead=app.core.isRead(item,app.read);
-            li.append(el('span',Number(item.ativo)===1?(isRead?'Lido':'Não lido'):'Inativo','nt-chip'));
-            li.append(el('h3',item.titulo));li.append(el('p',item.descricao));
-            const scope=app.labels[item.aba]||item.aba;
+            const content=el('td','');content.append(el('strong',item.titulo),el('div',item.descricao,'alerta-descricao'));
+            const status=Number(item.ativo)===1?(isRead?['Lido','text-bg-secondary']:['Não lido','text-bg-primary']):['Inativo','text-bg-light border'];
+            row.append(el('td',item.id),content,el('td',app.labels[item.aba]||item.aba));
+            row.append(el('td',item.id_linha?item.id_linha+(item.nome_linha?' - '+item.nome_linha:''):'-'));
+            row.append(badgeCell(app.priorityLabels[item.prioridade],priorityBadges[item.prioridade]||'text-bg-secondary'),badgeCell(status[0],status[1]));
             // Datas DATETIME/TIMESTAMP são exibidas como retornadas pelo servidor, sem supor fuso.
-            li.append(el('p',`#${item.id} · ${scope}${item.id_linha?' · Linha '+item.id_linha+(item.nome_linha?' — '+item.nome_linha:''):''} · Atualizado: ${item.atualizado_em}`,'nt-meta'));
-            const actions=el('div','','nt-actions');
-            actions.append(button(isRead?'Marcar como não lido':'Marcar como lido',()=>{const saved=app.mark(item,!isRead);message(saved?(isRead?'Alerta marcado como não lido.':'Alerta marcado como lido.'):'O navegador bloqueou o armazenamento. A leitura vale só nesta página.',!saved);}));
-            actions.append(button('Editar',()=>edit(item)));
-            actions.append(button('Excluir',()=>remove(item),true));li.append(actions);list.append(li);
+            row.append(el('td',item.atualizado_em));
+            const actions=el('td','');
+            actions.append(button(isRead?'Marcar como não lido':'Marcar como lido',()=>{const saved=app.mark(item,!isRead);message(saved?(isRead?'Alerta marcado como não lido.':'Alerta marcado como lido.'):'O navegador bloqueou o armazenamento. A leitura vale só nesta página.',!saved);},'btn-outline-secondary'));
+            actions.append(button('Editar',()=>edit(item),'btn-warning somente-admin'));
+            actions.append(button('Excluir',()=>remove(item),'btn-danger somente-admin'));row.append(actions);list.append(row);
         }
     }
     async function loadLines(){
@@ -75,7 +78,7 @@
             await app.request(editing?'PUT':'POST',data);
             reset();message(editing?'Alerta atualizado. A nova versão aparecerá como não lida.':'Alerta cadastrado.');
             try{await app.refresh();}catch(error){message('O alerta foi salvo, mas a lista não foi atualizada. '+error.message,true);}
-        }catch(error){message(error.message,true);save.textContent=editing?'Salvar alterações':'Cadastrar alerta';}
+        }catch(error){message(error.message,true);save.textContent=editing?'Salvar Alteração':'Cadastrar';}
         finally{lock(false);render();}
     });
     $('nt-cancel').addEventListener('click',()=>{reset();message('Edição cancelada.');});
@@ -87,8 +90,8 @@
     $('nt-read-all').addEventListener('click',()=>{const saved=app.markAll();message(saved?'Todos os alertas ativos foram marcados como lidos.':'O navegador bloqueou o armazenamento. A leitura vale só nesta página.',!saved);});
     ['nt-busca','nt-filtro-aba','nt-filtro-status','nt-filtro-leitura'].forEach(id=>$(id).addEventListener(id==='nt-busca'?'input':'change',render));
     const tab=new URLSearchParams(location.search).get('aba');if(Object.hasOwn(app.labels,tab)&&tab!=='todos')$('nt-filtro-aba').value=tab;
-    document.addEventListener('busmap:alerts',()=>{if(!pending){save.disabled=false;save.textContent=$('nt-id').value?'Salvar alterações':'Cadastrar alerta';}render();loadLines();});
+    document.addEventListener('busmap:alerts',()=>{if(!pending){save.disabled=false;save.textContent=$('nt-id').value?'Salvar Alteração':'Cadastrar';}render();loadLines();});
     document.addEventListener('busmap:read',render);
     document.addEventListener('busmap:error',()=>{if(!app.ready){save.textContent='Servidor indisponível';$('nt-count').textContent='Não foi possível carregar os alertas. Confira a mensagem acima e clique em Atualizar lista.';}});
-    if(app.ready){save.disabled=false;save.textContent='Cadastrar alerta';render();loadLines();}
+    if(app.ready){save.disabled=false;save.textContent='Cadastrar';render();loadLines();}
 })();

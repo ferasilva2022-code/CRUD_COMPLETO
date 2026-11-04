@@ -8,7 +8,7 @@ let idEdicao = null;
 
 function avisar(texto, erro = false) {
     mensagem.textContent = texto;
-    mensagem.style.color = erro ? '#b42332' : '#176a39';
+    mensagem.className = texto ? 'alert alert-' + (erro ? 'danger' : 'success') : 'd-none';
 }
 
 // Faz a requisição e converte a resposta PHP (JSON) em objeto JavaScript.
@@ -43,8 +43,9 @@ function dadosFormulario() {
 function limparCampos() {
     formPonto.reset();
     document.getElementById('id').readOnly = false;
-    document.getElementById('btn_salvar').disabled = false;
-    document.getElementById('btn_alterar').disabled = true;
+    document.getElementById('btn_salvar').classList.remove('d-none');
+    document.getElementById('btn_alterar').classList.add('d-none');
+    document.getElementById('titulo-form').textContent = 'Cadastrar Ponto';
     idEdicao = null;
 }
 
@@ -89,24 +90,48 @@ async function buscar() {
 function mostrarPontos(pontos) {
     container.replaceChildren();
     if (pontos.length === 0) {
-        container.textContent = 'Nenhum ponto encontrado.';
+        const vazio = document.createElement('p');
+        vazio.className = 'text-center text-secondary';
+        vazio.textContent = 'Nenhum ponto encontrado.';
+        container.appendChild(vazio);
         return;
     }
+    const tabela = document.createElement('table');
+    tabela.className = 'table table-striped table-hover align-middle';
+    tabela.innerHTML = `
+        <thead>
+            <tr>
+                <th>ID</th><th>Nome</th><th>Tipo</th>
+                <th>Latitude</th><th>Longitude</th><th>Ações</th>
+            </tr>
+        </thead>`;
+    const corpo = document.createElement('tbody');
     for (const ponto of pontos) {
-        const linha = document.createElement('div');
-        linha.className = 'item-ponto';
-        const descricao = document.createElement('p');
-        descricao.textContent = `#${ponto.id} — ${ponto.nome} | Tipo: ${ponto.tipo} | Lat: ${ponto.latitude} | Lon: ${ponto.longitude}`;
-        linha.appendChild(descricao);
-        for (const [texto, acao] of [['Detalhes', detalhar], ['Editar', carregar], ['Excluir', excluir]]) {
+        const linha = document.createElement('tr');
+        for (const valor of [ponto.id, ponto.nome, ponto.tipo, ponto.latitude, ponto.longitude]) {
+            const celula = document.createElement('td');
+            celula.textContent = valor;
+            linha.appendChild(celula);
+        }
+        const acoes = document.createElement('td');
+        // Detalhes é para todos; Editar e Excluir só aparecem para o admin
+        for (const [texto, acao, classe] of [
+            ['Detalhes', detalhar, 'btn-outline-secondary'],
+            ['Editar', carregar, 'btn-warning somente-admin'],
+            ['Excluir', excluir, 'btn-danger somente-admin']
+        ]) {
             const botao = document.createElement('button');
             botao.type = 'button';
+            botao.className = 'btn btn-sm me-1 ' + classe;
             botao.textContent = texto;
             botao.addEventListener('click', () => acao(Number(ponto.id)));
-            linha.appendChild(botao);
+            acoes.appendChild(botao);
         }
-        container.appendChild(linha);
+        linha.appendChild(acoes);
+        corpo.appendChild(linha);
     }
+    tabela.appendChild(corpo);
+    container.appendChild(tabela);
 }
 
 // DETALHAR: busca somente um ponto pelo ID.
@@ -128,10 +153,11 @@ async function carregar(id) {
         document.getElementById('latitude').value = ponto.latitude;
         document.getElementById('longitude').value = ponto.longitude;
         document.getElementById('id').readOnly = true;
-        document.getElementById('btn_salvar').disabled = true;
-        document.getElementById('btn_alterar').disabled = false;
+        document.getElementById('btn_salvar').classList.add('d-none');
+        document.getElementById('btn_alterar').classList.remove('d-none');
+        document.getElementById('titulo-form').textContent = 'Alterar Ponto';
         idEdicao = Number(ponto.id);
-        avisar('Editando ponto #' + idEdicao + '. Altere os campos e clique em Alterar ponto.');
+        avisar('Editando ponto #' + idEdicao + '. Altere os campos e clique em Salvar Alteração.');
         formPonto.scrollIntoView({ behavior: 'smooth', block: 'start' });
     } catch (erro) { avisar(erro.message, true); }
 }

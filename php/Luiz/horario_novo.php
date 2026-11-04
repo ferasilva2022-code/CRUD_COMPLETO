@@ -1,6 +1,6 @@
-
 <?php
 require_once __DIR__ . '/horario_comum.php';
+require_once __DIR__ . '/../valida_admin.php'; // só admin pode alterar os dados
 
 horario_metodo('POST');
 

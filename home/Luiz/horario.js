@@ -144,6 +144,7 @@ async function listarRegistros() {
             colocarCelula(linha, item.adaptacao);
 
             const acoes = document.createElement('td');
+            acoes.className = 'somente-admin';
 
             // Botão editar
             const editar = document.createElement('button');
@@ -208,7 +209,12 @@ async function editarRegistro(id) {
             item.adaptacao;
 
         document.getElementById('botaoSalvar').textContent =
-            'Atualizar';
+            'Salvar Alteração';
+
+        document.getElementById('titulo-form').textContent =
+            'Alterar Horário';
+
+        document.getElementById('botaoCancelar').classList.remove('d-none');
 
         formulario.scrollIntoView({
             behavior: 'smooth',
@@ -243,7 +249,9 @@ async function excluirRegistro(id) {
 function cancelarEdicao() {
     formulario.reset();
     document.getElementById('id').value = '';
-    document.getElementById('botaoSalvar').textContent = 'Salvar';
+    document.getElementById('botaoSalvar').textContent = 'Cadastrar';
+    document.getElementById('titulo-form').textContent = 'Cadastrar Horário';
+    document.getElementById('botaoCancelar').classList.add('d-none');
 }
 // Botão de pesquisa
 document.getElementById('botaoBuscar')

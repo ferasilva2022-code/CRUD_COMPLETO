@@ -1,5 +1,5 @@
-
 <?php
+include_once('../valida_admin.php'); // só admin pode alterar os dados
 include_once('../conexao.php');
 
 $retorno = [
