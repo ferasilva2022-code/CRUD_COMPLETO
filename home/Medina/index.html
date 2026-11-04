@@ -8,9 +8,10 @@
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.13.1/font/bootstrap-icons.min.css">
     <link rel="stylesheet" href="../../style.css">
     <link rel="stylesheet" href="style.css">
+    <link rel="stylesheet" href="../Pietro/style.css">
 </head>
 <!-- data-somente-admin: usuário comum que abrir esta página volta para Linhas -->
-<body data-somente-admin>
+<body data-somente-admin data-aba="usuarios">
     <header>
         <nav class="navbar navbar-expand">
             <div class="container">
@@ -21,6 +22,7 @@
                     <a class="nav-link" href="../Leonardo/itinerario.html">Itinerários</a>
                     <a class="nav-link" href="../Alice/ponto.html">Pontos</a>
                     <a class="nav-link" href="../Luiz/horario.html">Horários</a>
+                    <a class="nav-link" href="../Pietro/alerta.html" data-bm-link>Notificações <span class="bm-badge" data-bm-count aria-label="Carregando notificações">…</span></a>
                 </div>
                 <!-- o nome do usuário é preenchido pelo js/valida_sessao.js -->
                 <div class="navbar-usuario">
@@ -90,5 +92,7 @@
 <script src="../../js/Medina/alterar_usuario.js"></script>
 <script src="../../js/Medina/excluir_usuario.js"></script>
 <script src="script.js"></script>
+<script src="../../js/Pietro/alerta_core.js"></script>
+<script src="../../js/Pietro/alerta_compartilhado.js"></script>
 </body>
 </html>

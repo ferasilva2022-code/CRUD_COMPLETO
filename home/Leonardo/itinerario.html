@@ -15,9 +15,10 @@
 
     <!-- CSS específico -->
     <link rel="stylesheet" href="style.css">
+    <link rel="stylesheet" href="../Pietro/style.css">
 </head>
 
-<body>
+<body data-aba="itinerarios">
 
     <!-- Navbar -->
     <header>
@@ -30,6 +31,7 @@
                     <a class="nav-link" href="../Leonardo/itinerario.html">Itinerários</a>
                     <a class="nav-link" href="../Alice/ponto.html">Pontos</a>
                     <a class="nav-link" href="../Luiz/horario.html">Horários</a>
+                    <a class="nav-link" href="../Pietro/alerta.html" data-bm-link>Notificações <span class="bm-badge" data-bm-count aria-label="Carregando notificações">…</span></a>
                 </div>
                 <!-- o nome do usuário é preenchido pelo js/valida_sessao.js -->
                 <div class="navbar-usuario">
@@ -98,6 +100,8 @@
     <!-- login, Logoff e permissões (admin / usuário comum) -->
     <script src="../../js/valida_sessao.js"></script>
     <script src="itinerario.js"></script>
+    <script src="../../js/Pietro/alerta_core.js"></script>
+    <script src="../../js/Pietro/alerta_compartilhado.js"></script>
 
 </body>
 

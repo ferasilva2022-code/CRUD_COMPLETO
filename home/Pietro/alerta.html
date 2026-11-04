@@ -1,0 +1,93 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Notificações - BusMap</title>
+    <link rel="stylesheet" href="../../style.css">
+    <link rel="stylesheet" href="style.css">
+</head>
+<body class="nt-body" data-aba="notificacoes">
+    <nav class="navbar navbar-expand" aria-label="Menu principal">
+        <div class="container">
+            <a class="navbar-brand" href="../../index.html">BusMap</a>
+            <div class="navbar-nav">
+                <a class="nav-link" href="../Medina/index.html">Usuários</a>
+                <a class="nav-link" href="../Fernanda/linha.html">Linhas</a>
+                <a class="nav-link" href="../Leonardo/itinerario.html">Itinerários</a>
+                <a class="nav-link" href="../Alice/ponto.html">Pontos</a>
+                <a class="nav-link" href="../Luiz/horario.html">Horários</a>
+            
+                    <a class="nav-link" href="alerta.html" data-bm-link aria-current="page">Notificações <span class="bm-badge" data-bm-count aria-label="Carregando notificações">…</span></a>
+                </div>
+        </div>
+    </nav>
+    <main class="nt-page">
+        <h1>Notificações</h1>
+        <p class="nt-muted">Publique alertas de serviço e escolha em quais abas eles aparecem. A leitura fica salva neste navegador; alertas editados voltam a aparecer como não lidos.</p>
+        <noscript><p>Ative o JavaScript para cadastrar e consultar as notificações.</p></noscript>
+        <div id="nt-feedback" class="nt-feedback" role="status" aria-live="polite"></div>
+        <div class="nt-layout">
+            <section class="nt-card" aria-labelledby="nt-form-title">
+                <h2 id="nt-form-title">Novo alerta</h2>
+                <form id="nt-form">
+                    <input type="hidden" id="nt-id">
+                    <input type="hidden" id="nt-revisao">
+                    <div class="nt-field">
+                        <label for="nt-titulo">Título</label>
+                        <input id="nt-titulo" name="titulo" maxlength="150" required placeholder="Ex.: alteração de trajeto">
+                    </div>
+                    <div class="nt-field">
+                        <label for="nt-descricao">Descrição</label>
+                        <textarea id="nt-descricao" name="descricao" maxlength="2000" required placeholder="Informe o que mudou e como proceder."></textarea>
+                    </div>
+                    <div class="nt-field">
+                        <label for="nt-aba">Exibir na aba</label>
+                        <select id="nt-aba" name="aba">
+                            <option value="todos">Todas as abas</option>
+                            <option value="usuarios">Usuários</option>
+                            <option value="linhas">Linhas</option>
+                            <option value="itinerarios">Itinerários</option>
+                            <option value="pontos">Pontos</option>
+                            <option value="horarios">Horários</option>
+                        </select>
+                    </div>
+                    <div class="nt-field">
+                        <label for="nt-linha">Linha vinculada (opcional)</label>
+                        <select id="nt-linha" name="id_linha"><option value="">Sem vínculo com uma linha</option></select>
+                        <small>O vínculo identifica a linha afetada. A aba acima determina onde o aviso aparece.</small>
+                    </div>
+                    <div class="nt-field">
+                        <label for="nt-prioridade">Prioridade</label>
+                        <select id="nt-prioridade" name="prioridade">
+                            <option value="info">Informação</option>
+                            <option value="aviso">Atenção</option>
+                            <option value="urgente">Urgente</option>
+                        </select>
+                    </div>
+                    <div class="nt-field"><label for="nt-ativo"><input type="checkbox" id="nt-ativo" name="ativo" checked>Alerta ativo</label><small>Alertas inativos ficam no histórico e não geram avisos.</small></div>
+                    <div class="nt-actions">
+                        <button type="submit" class="nt-btn nt-primary" id="nt-save" disabled>Carregando…</button>
+                        <button type="button" class="nt-btn" id="nt-cancel" hidden>Cancelar edição</button>
+                    </div>
+                </form>
+            </section>
+            <section class="nt-card" aria-labelledby="nt-list-title">
+                <h2 id="nt-list-title">Central de alertas</h2>
+                <div class="nt-filters">
+                    <div class="nt-field nt-wide"><label for="nt-busca">Buscar alertas</label><input type="search" id="nt-busca" placeholder="Título, descrição ou código da linha"></div>
+                    <div class="nt-field"><label for="nt-filtro-aba">Aba</label><select id="nt-filtro-aba"><option value="">Todas</option><option value="usuarios">Usuários</option><option value="linhas">Linhas</option><option value="itinerarios">Itinerários</option><option value="pontos">Pontos</option><option value="horarios">Horários</option></select></div>
+                    <div class="nt-field"><label for="nt-filtro-status">Estado</label><select id="nt-filtro-status"><option value="ativos">Ativos</option><option value="inativos">Inativos</option><option value="">Todos</option></select></div>
+                    <div class="nt-field nt-wide"><label for="nt-filtro-leitura">Leitura</label><select id="nt-filtro-leitura"><option value="todos">Todos</option><option value="nao-lidos">Não lidos</option><option value="lidos">Lidos</option></select></div>
+                </div>
+                <div class="nt-actions"><button type="button" class="nt-btn" id="nt-refresh">Atualizar lista</button><button type="button" class="nt-btn" id="nt-read-all" disabled>Marcar todos os ativos como lidos</button></div>
+                <p id="nt-count" class="nt-muted" role="status" style="margin-top:16px">Carregando alertas…</p>
+                <ul id="nt-list" class="nt-list" aria-label="Alertas cadastrados"></ul>
+            </section>
+        </div>
+    </main>
+    <script src="../../js/Pietro/alerta_core.js"></script>
+    <script src="../../js/Pietro/alerta_compartilhado.js"></script>
+    <script src="alerta.js"></script>
+</body>
+</html>
